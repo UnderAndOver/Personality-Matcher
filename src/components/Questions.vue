@@ -1,15 +1,15 @@
 <template>
-  <section class="container">
+  <v-container class="container fill-height" fluid>
     <div class="questionBox" id="app">
       <transition
-        :duration="{ enter: 500, leave: 300 }"
+        :duration="{ enter: 0, leave: 0 }"
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
         mode="out-in"
       >
-        <v-card class="questionContainer">
-          <v-card-title>
-            Personality Assessment
+        <v-card class="questionContainer" :key="questionIndex">
+          <v-card-title>Personality Assessment</v-card-title>
+          <v-card-subtitle>
             <v-progress-linear
               class="progressContainer"
               color="light-blue"
@@ -18,15 +18,15 @@
               striped
             ></v-progress-linear>
             {{Math.floor(progress)}}% complete
-          </v-card-title>
+          </v-card-subtitle>
           <v-card-text>
             <h2 class="titleContainer title">{{questions[questionIndex].text}}</h2>
             <div class="optionContainer">
               <div
                 class="option"
                 v-for="(response,index) in questions[questionIndex].choices"
-                @click="selectOption(response)"
-                :class="{ 'is-selected': answers[questionIndex] == index}"
+                @click="selectOption(index,response)"
+                :class="{ 'is-selected': answers[questionIndex]&&answers[questionIndex].selected== index}"
                 :key="index"
               >{{index | charIndex}}.{{response.text}}</div>
             </div>
@@ -42,37 +42,49 @@
         </v-card>
       </transition>
     </div>
-  </section>
+  </v-container>
 </template>
 
 <script>
-const {
-  getItems,
-  getInfo
-} = require("@alheimsins/b5-johnson-120-ipip-neo-pi-r");
+const { getItems, getInfo } = require("@alheimsins/b5-50-ipip-neo-pi-r");
 export default {
   data: () => {
     return {
       questions: getItems(),
-      answers: [],
+      answers: Array(120).fill(null),
       questionIndex: 0
     };
   },
   methods: {
-    selectOption(response) {
+    selectOption(index, response) {
+      debugger;
       let question = this.questions[this.questionIndex];
       let answer = {
         domain: question["domain"],
         facet: question["facet"],
-        score: response["score"]
+        score: response["score"],
+        selected: index
       };
-      this.answers.push(answer);
+      if (
+        this.answers[this.questionIndex] &&
+        this.answers[this.questionIndex].score == answer.score
+      ) {
+        this.answers[this.questionIndex] = null;
+        this.questionIndex++;
+        this.questionIndex--;
+      } else {
+        this.answers[this.questionIndex] = Object.assign({}, answer);
+        this.questionIndex--;
+        this.questionIndex++;
+        if (this.questionIndex < this.questions.length - 1)
+          this.questionIndex++;
+      }
     },
     prev() {
-      this.questionIndex--;
+      if (this.questionIndex > 0) this.questionIndex--;
     },
     next() {
-      this.questionIndex++;
+      if (this.questionIndex < this.questions.length - 1) this.questionIndex++;
     }
   },
   filters: {
@@ -83,7 +95,7 @@ export default {
   computed: {
     progress: {
       get() {
-        return (this.questionIndex * 100) / 120;
+        return (this.questionIndex * 100) / (this.questions.length - 1);
         //return Math.ceil((this.questionIndex / this.questions.length) * 100);
       }
     }
@@ -100,7 +112,6 @@ $primary_color: #3d5afe;
 
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
-
 body {
   font-family: "Open Sans", sans-serif;
   font-size: 14px;
@@ -133,6 +144,8 @@ body {
 
 .container {
   margin: 0 0.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .questionBox {
@@ -185,6 +198,7 @@ body {
     text-align: center;
     margin: 0 auto;
     padding: 1.5rem;
+    padding-top: 0;
   }
 
   .quizForm {
