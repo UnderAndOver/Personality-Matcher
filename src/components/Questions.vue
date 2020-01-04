@@ -36,8 +36,9 @@
             <v-btn
               :class="(answers[questionIndex]==null)?'':'is-active'"
               @click="next()"
-              :disabld="questionIndex>questions.length"
+              :disabld="questionIndex>questions.length && questionIndex<questions.length"
             >{{(answers[questionIndex]==null)?'Skip':'Next'}}</v-btn>
+            <v-btn @click="results()" v-show="questionIndex==questions.length-1">Results</v-btn>
           </v-card-actions>
         </v-card>
       </transition>
@@ -46,18 +47,23 @@
 </template>
 
 <script>
-const { getItems, getInfo } = require("@alheimsins/b5-50-ipip-neo-pi-r");
+import { APIService } from "../api/APIService";
+const apiService = new APIService();
+const {
+  getItems,
+  getInfo
+} = require("@alheimsins/b5-johnson-120-ipip-neo-pi-r");
 export default {
   data: () => {
     return {
       questions: getItems(),
+      info: getInfo(),
       answers: Array(120).fill(null),
       questionIndex: 0
     };
   },
   methods: {
     selectOption(index, response) {
-      debugger;
       let question = this.questions[this.questionIndex];
       let answer = {
         domain: question["domain"],
@@ -85,6 +91,31 @@ export default {
     },
     next() {
       if (this.questionIndex < this.questions.length - 1) this.questionIndex++;
+    },
+    results() {
+      debugger;
+      const _answers = this.answers.map(
+        ({ selected, ...answers }) => answers,
+        this
+      );
+      const result = {
+        ...getInfo(),
+        lang: "en",
+        answers: _answers,
+        timeElapsed: 10,
+        dateStamp: Date.now()
+      };
+      apiService.createPersonality(result).then(
+        resp => {
+          console.log(resp);
+          if (resp.status === 201) this.personality = result.data;
+        },
+        error => {
+          this.showError = true;
+        }
+      );
+      console.log(_answers);
+      this.$emit("results", _answers);
     }
   },
   filters: {
@@ -99,9 +130,6 @@ export default {
         //return Math.ceil((this.questionIndex / this.questions.length) * 100);
       }
     }
-  },
-  mounted() {
-    this.questions = getItems();
   }
 };
 </script>
