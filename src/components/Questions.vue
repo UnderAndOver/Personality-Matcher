@@ -36,7 +36,7 @@
             <v-btn
               :class="(answers[questionIndex]==null)?'':'is-active'"
               @click="next()"
-              :disabld="questionIndex>questions.length && questionIndex<questions.length"
+              :disabled="questionIndex==questions.length-1"
             >{{(answers[questionIndex]==null)?'Skip':'Next'}}</v-btn>
             <v-btn @click="results()" v-show="questionIndex==questions.length-1">Results</v-btn>
           </v-card-actions>
@@ -107,15 +107,11 @@ export default {
       };
       apiService.createPersonality(result).then(
         resp => {
-          console.log(resp);
           if (resp.status === 201) this.personality = result.data;
         },
-        error => {
-          this.showError = true;
-        }
+        error => (this.showError = true)
       );
-      console.log(_answers);
-      this.$emit("results", _answers);
+      this.$emit("results", result);
     }
   },
   filters: {
@@ -127,7 +123,6 @@ export default {
     progress: {
       get() {
         return (this.questionIndex * 100) / (this.questions.length - 1);
-        //return Math.ceil((this.questionIndex / this.questions.length) * 100);
       }
     }
   }
