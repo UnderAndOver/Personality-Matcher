@@ -1,10 +1,15 @@
 <template>
+<div>
   <questions @results="results($event)"></questions>
+  <v-btn @click="test()">Don't mind me</v-btn>
+</div>
 </template>
 
 <script>
 import questions from "../components/Questions";
 const calculateScore = require("@alheimsins/bigfive-calculate-score");
+import { APIService } from "../api/APIService";
+const apiService = new APIService();
 export default {
   components: {
     questions
@@ -14,8 +19,19 @@ export default {
   },
   methods: {
     results(e) {
-      debugger;
-      console.log(calculateScore(e));
+      store.commit('setPersonalityScores',calculateScore(e));
+      this.$router.push("results");
+    },
+    async test(){
+      var e;
+      await apiService.getPersonalities().then((resp)=>{
+        debugger;
+          if (resp!= null){console.log(resp); e = resp.personalities[0];}
+        },
+        error => (this.showError = true)
+      );
+      this.$store.commit('setPersonalityScores',calculateScore(e));
+      this.$router.push("results");
     }
   }
 };

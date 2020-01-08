@@ -7,7 +7,7 @@ export class APIService {
 
     getPersonalities() {
 
-        const url = `${API_URL}/api/personality/`;
+        const url = `${API_URL}/api/personality/list`;
 
         return axios.get(url).then(response => response.data);
     }

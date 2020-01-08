@@ -45,9 +45,10 @@ export default {
   },
   methods: {
     assessment() {
-      this.$router.push("/assessment");
+      this.$router.push("assessment");
     },
-    connections() {}
+    connections() {
+    }
   }
 };
 </script>
