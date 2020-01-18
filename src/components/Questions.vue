@@ -17,28 +17,41 @@
               :value="progress"
               striped
             ></v-progress-linear>
-            {{Math.floor(progress)}}% complete
+            {{ Math.floor(progress) }}% complete
           </v-card-subtitle>
           <v-card-text>
-            <h2 class="titleContainer title">{{questions[questionIndex].text}}</h2>
+            <h2 class="titleContainer title">
+              {{ questions[questionIndex].text }}
+            </h2>
             <div class="optionContainer">
               <div
                 class="option"
-                v-for="(response,index) in questions[questionIndex].choices"
-                @click="selectOption(index,response)"
-                :class="{ 'is-selected': answers[questionIndex]&&answers[questionIndex].selected== index}"
+                v-for="(response, index) in questions[questionIndex].choices"
+                @click="selectOption(index, response)"
+                :class="{
+                  'is-selected':
+                    answers[questionIndex] &&
+                    answers[questionIndex].selected == index
+                }"
                 :key="index"
-              >{{index | charIndex}}.{{response.text}}</div>
+              >
+                {{ index | charIndex }}.{{ response.text }}
+              </div>
             </div>
           </v-card-text>
           <v-card-actions>
-            <v-btn @click="prev()" :disabled="questionIndex<1">Back</v-btn>
+            <v-btn @click="prev()" :disabled="questionIndex < 1">Back</v-btn>
             <v-btn
-              :class="(answers[questionIndex]==null)?'':'is-active'"
+              :class="answers[questionIndex] == null ? '' : 'is-active'"
               @click="next()"
-              :disabled="questionIndex==questions.length-1"
-            >{{(answers[questionIndex]==null)?'Skip':'Next'}}</v-btn>
-            <v-btn @click="results()" v-show="questionIndex==questions.length-1">Results</v-btn>
+              :disabled="questionIndex == questions.length - 1"
+              >{{ answers[questionIndex] == null ? "Skip" : "Next" }}</v-btn
+            >
+            <v-btn
+              @click="results()"
+              v-show="questionIndex == questions.length - 1"
+              >Results</v-btn
+            >
           </v-card-actions>
         </v-card>
       </transition>
@@ -93,7 +106,6 @@ export default {
       if (this.questionIndex < this.questions.length - 1) this.questionIndex++;
     },
     results() {
-      debugger;
       const _answers = this.answers.map(
         ({ selected, ...answers }) => answers,
         this
