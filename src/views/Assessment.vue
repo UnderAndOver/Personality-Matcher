@@ -19,7 +19,7 @@ export default {
   },
   methods: {
     results(e) {
-      store.commit("setPersonalityScores", calculateScore(e));
+      this.$store.commit("setPersonalityScores", calculateScore(e));
       this.$router.push("results");
     },
     async test() {
