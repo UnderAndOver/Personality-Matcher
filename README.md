@@ -1,8 +1,10 @@
-# tomodai
+# Personality Matcher
 
 ## Project setup
 ```
 npm install
+requires mongo(localhost:27017)
+requires express(localhost:5000)
 ```
 
 ### Compiles and hot-reloads for development
