@@ -1,4 +1,9 @@
 # Personality Matcher
+Images from site
+
+![quiz](https://i.ibb.co/ZSnxn4h/personality-1.png)
+
+![quiz results](https://i.ibb.co/jyhrQNj/personality-2.png)
 
 ## Project setup
 ```
