@@ -13,7 +13,7 @@
     "@alheimsins/b5-johnson-120-ipip-neo-pi-r": "^5.1.1",
     "@alheimsins/b5-result-text": "^4.0.0",
     "@alheimsins/bigfive-calculate-score": "^2.0.5",
-    "axios": "^0.20.0",
+    "axios": "^0.28.0",
     "bigfive": "^3.0.0",
     "body-parser": "^1.19.0",
     "chart.js": "^2.9.3",
